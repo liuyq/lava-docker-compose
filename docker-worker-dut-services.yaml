@@ -51,3 +51,11 @@ services:
       - 2049:2049
       - 2049:2049/udp
       - 35543:35543
+
+  lava-dispatcher-webserver:
+    image: httpd
+    volumes:
+      - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
+      - /var/lib/lava/dispatcher/tmp:/var/lib/lava/dispatcher/tmp
+    ports:
+      - 80:80
