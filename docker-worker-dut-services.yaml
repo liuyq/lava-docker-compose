@@ -54,6 +54,7 @@ services:
 
   lava-dispatcher-webserver:
     image: httpd
+    restart: unless-stopped
     volumes:
       - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
       - /var/lib/lava/dispatcher/tmp:/var/lib/lava/dispatcher/tmp
