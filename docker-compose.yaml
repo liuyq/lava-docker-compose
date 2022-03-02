@@ -57,6 +57,10 @@ services:
     - lava-coordinator
     environment:
       SERVICES: "gunicorn"
+      # Since release 2022.02, naming of environmental variables for gunicorn
+      # arguments is unified with prefix 'GUNICORN_'.
+      GUNICORN_BIND: "--bind lava-server:8000"
+      # Keep the old variable so that it is backwards compatible.
       BIND: "--bind lava-server:8000"
       LAVA_ADMIN_USERNAME: "${DC_LAVA_ADMIN_USERNAME}"
       LAVA_ADMIN_PASSWORD: "${DC_LAVA_ADMIN_PASSWORD}"
