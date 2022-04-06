@@ -22,10 +22,6 @@ COPY ssh/* /root/.ssh/
 # Add power control scripts.
 COPY power-control/* /root/power-control/
 
-# Add LAVA coordinator config (required for multinode jobs).
-RUN mkdir -p /etc/lava-coordinator
-COPY lava-coordinator.conf /etc/lava-coordinator/
-
 # Add lab scripts
 RUN mkdir -p /usr/local/lab-scripts/
 ADD https://git.linaro.org/lava/lava-lab.git/plain/shared/lab-scripts/snmp_pdu_control /usr/local/lab-scripts/
