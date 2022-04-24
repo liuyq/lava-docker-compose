@@ -11,7 +11,8 @@ RUN download-mibs
 
 # Add MIBs
 RUN mkdir -p /usr/share/snmp/mibs/
-ADD https://download.schneider-electric.com/files?p_enDocType=Firmware+-+Released&p_File_Name=powernet428.mib&p_Doc_Ref=APC_PowerNetMIB428 /usr/share/snmp/mibs/powernet428.mib
+#ADD https://raw.githubusercontent.com/ci-box/ci-box-lava-worker/master/powernet428.mib /usr/share/snmp/mibs/powernet428.mib
+COPY powernet428.mib /usr/share/snmp/mibs/powernet428.mib
 
 # Add certificates.
 COPY certs/* /etc/lava-dispatcher/certificates.d/
@@ -21,6 +22,10 @@ COPY ssh/* /root/.ssh/
 
 # Add power control scripts.
 COPY power-control/* /root/power-control/
+
+# Add LAVA coordinator config (required for multinode jobs).
+RUN mkdir -p /etc/lava-coordinator
+COPY lava-coordinator.conf /etc/lava-coordinator/
 
 # Add lab scripts
 RUN mkdir -p /usr/local/lab-scripts/

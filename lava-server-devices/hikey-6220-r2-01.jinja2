@@ -1,0 +1,24 @@
+{% extends 'hi6220-hikey-r2.jinja2' %}
+{% set fastboot_serial_number = '6FFB682C0034659E' %}
+{% set adb_serial_number = '6FFB682C0034659E' %}
+{% set connection_list = ['uart1'] %}
+{% set connection_commands = {'uart1': 'telnet localhost 7101'} %}
+{% set connection_tags = {'uart1': ['primary', 'telnet']} %}
+
+{# OTG connected to USB port 11 #}
+
+{# set pre_power_command = '/usr/local/lab-scripts/cbrxd_hub_control --usb_port 11 --mode sync -n lkft-slave06-hub02' #}
+{# set pre_os_command = '/usr/local/lab-scripts/cbrxd_hub_control --usb_port 11 --mode off -n lkft-slave06-hub02' #}
+{# set hard_reset_command = '/usr/local/lab-scripts/snmp_pdu_control --hostname pdu04 --command reboot --port 5' #}
+{# set power_on_command = '/usr/local/lab-scripts/snmp_pdu_control --hostname pdu04 --command on --port 5' #}
+{# set power_off_command = '/usr/local/lab-scripts/snmp_pdu_control --hostname pdu04 --command off --port 5' #}
+{# set soft_reset_command = 'fastboot -u -s 315F62C200394AD3' #}
+{% set adb_command = 'adb -s 6FFB682C0034659E' %}
+{% set fastboot_command = 'fastboot -u -s 6FFB682C0034659E' %}
+{% set device_info = [{'board_id': '6FFB682C0034659E'}] %}
+{% set interrupt_prompt = 'Android Fastboot mode' %}
+{% set interrupt_string = "' '" %}
+{# set device_ip = "10.66.16.27" #}
+
+{# set sync_to_lava = {'device_type': 'hi6220-hikey-r2', 'worker': 'lkft-slave06.lkftlab', 'tags': ['4k-hdmi-dongle', 'cambridge-lab', 'production', 'lcg'], 'aliases': []} #}
+{% set sync_to_lava = {'device_type': 'hi6220-hikey-r2', 'worker': 'work0', 'tags': ['4k-hdmi-dongle', 'cambridge-lab', 'production', 'lcg'], 'aliases': []} %}
