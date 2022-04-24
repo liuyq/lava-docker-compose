@@ -193,3 +193,6 @@ In order to start the containers, run:
 or, alternatively:
 
     make lava-dispatcher
+
+## lava-lab files
+https://git.linaro.org/lava/lava-lab.git
