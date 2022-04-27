@@ -196,3 +196,4 @@ or, alternatively:
 
 ## lava-lab files
 https://git.linaro.org/lava/lava-lab.git
+https://git.lavasoftware.org/lava
