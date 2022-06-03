@@ -23,6 +23,9 @@ COPY ssh/* /root/.ssh/
 # Add power control scripts.
 COPY power-control/* /root/power-control/
 
+# hack for android devices
+COPY docker-hack.py /usr/lib/python3/dist-packages/lava_dispatcher/utils/docker.py
+
 # Add lab scripts
 RUN mkdir -p /usr/local/lab-scripts/
 ADD https://git.linaro.org/lava/lava-lab.git/plain/shared/lab-scripts/snmp_pdu_control /usr/local/lab-scripts/
