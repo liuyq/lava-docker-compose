@@ -122,14 +122,14 @@ services:
     - '/dev/serial:/dev/serial:ro' # required for serial adapters
     - '/dev/disk:/dev/disk:ro' # required for SDMux
     - worker-state:/var/lib/lava/dispatcher/worker/
-    - worker-http:/var/lib/lava/dispatcher/tmp
+    - worker-http-local:/var/lib/lava/dispatcher/tmp
     - worker-tftp:/srv/tftp
 
   lava-dispatcher-webserver:
     image: httpd
     volumes:
     - ./httpd/httpd.conf:/usr/local/apache2/conf/httpd.conf:ro
-    - worker-http:/var/lib/lava/dispatcher/tmp
+    - worker-http-local:/var/lib/lava/dispatcher/tmp
     ports:
       - 80
 
@@ -169,7 +169,7 @@ services:
       ftp_proxy: "${ftp_proxy}"
     privileged: true
     volumes:
-      - worker-http:/var/lib/lava/dispatcher/tmp
+      - worker-http-local:/var/lib/lava/dispatcher/tmp
     ports:
       - 3111:3111
       - 3111:3111/udp
@@ -194,5 +194,11 @@ volumes:
     name: lava-server-worker-state
   worker-http:
     name: lava-server-worker-http
+  worker-http-local:
+    driver: local
+    driver_opts:
+      o: bind
+      device: /var/lib/lava/dispatcher/tmp
+      type: ext4
   worker-tftp:
     name: lava-server-worker-tftp
