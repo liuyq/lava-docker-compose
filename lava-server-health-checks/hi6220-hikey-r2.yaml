@@ -1,94 +1,86 @@
-device_type: hi6220-hikey-r2
-job_name: HiKey 6220 health check
 timeouts:
   job:
-    minutes: 60
-  action:
-    minutes: 15
+    minutes: 85
   connection:
     minutes: 2
+  actions:
+    finalize:
+      seconds: 60
+context:
+  test_character_delay: 10
+reboot_to_fastboot: false
+device_type: hi6220-hikey-r2
+job_name: health
 priority: medium
 visibility: public
-
-metadata:
-  source: https://git.linaro.org/lava/lava-lab.git
-  build: morty-mainline-588
-  original.build: http://snapshots.linaro.org/openembedded/lkft/morty/hikey/rpb/linux-mainline/588/
-  stage: hikey-merge
-  uefi-build: 70
-  uefi-url: https://snapshots.linaro.org/96boards/reference-platform/components/uefi-staging/70/hikey/release/
-
 actions:
-
 - deploy:
-    namespace: aosp
     timeout:
-      minutes: 15
-    # AOSP deployment
-    to: fastboot
-    docker:
-        image: lavalabteam/adb-fastboot
+      minutes: 40
+    to: downloads
     images:
       ptable:
-        url: http://images.validation.linaro.org/snapshots.linaro.org/96boards/reference-platform/components/uefi-staging/70/hikey/release/ptable-aosp-8g.img
+        url: http://images.validation.linaro.org/snapshots.linaro.org/96boards/reference-platform/components/uefi-staging/69/hikey/release/ptable-aosp-8g.img
       boot:
-        url: http://images.validation.linaro.org/snapshots.linaro.org/96boards/hikey/linaro/aosp-master/835/boot.img.xz
-        compression: xz
-      cache:
-        url: http://images.validation.linaro.org/snapshots.linaro.org/96boards/hikey/linaro/aosp-master/835/cache.img.xz
-        compression: xz
-      userdata:
-        url: http://images.validation.linaro.org/snapshots.linaro.org/96boards/hikey/linaro/aosp-master/835/userdata.img.xz
+        url: http://192.168.1.78/prebuilts/android/lkft/lkft-aosp-master-hikey/336/boot.img.xz
         compression: xz
       system:
-        url: http://images.validation.linaro.org/snapshots.linaro.org/96boards/hikey/linaro/aosp-master/835/system.img.xz
+        url: http://192.168.1.78/prebuilts/android/lkft/lkft-aosp-master-hikey/336/system.img.xz
         compression: xz
       vendor:
-        url: http://images.validation.linaro.org/snapshots.linaro.org/96boards/hikey/linaro/aosp-master/835/vendor.img.xz
+        url: http://192.168.1.78/prebuilts/android/lkft/lkft-aosp-master-hikey/336/vendor.img.xz
         compression: xz
-    os: aosp
-
+      userdata:
+        url: http://192.168.1.78/prebuilts/android/lkft/lkft-aosp-master-hikey/336/userdata.img.xz
+        compression: xz
+    os: android
+- deploy:
+    timeout:
+      minutes: 10
+    to: fastboot
+    docker:
+      image: lavalabteam/adb-fastboot
+    images:
+      ptable:
+        url: downloads://ptable-aosp-8g.img
+      boot:
+        url: downloads://boot.img
+      system:
+        url: downloads://system.img
+      vendor:
+        url: downloads://vendor.img
+      userdata:
+        url: downloads://userdata.img
 - boot:
-    namespace: aosp
+    docker:
+      image: lavalabteam/adb-fastboot
     prompts:
-    - 'healthd: No battery devices found'
-    - 'hikey: '
-    - 'console:'
+    - console:/
+    - root@(.*):[/~]#
     timeout:
       minutes: 15
     method: fastboot
-    docker:
-        image: lavalabteam/adb-fastboot
-
 - test:
-    namespace: aosp
     docker:
-      image: lavalabteam/wget
+      image: lavalabteam/adb-fastboot
     timeout:
-      minutes: 5
+      minutes: 10
     definitions:
-    - repository:
+    - from: inline
+      path: android-boot.yaml
+      name: android-boot
+      repository:
         metadata:
           format: Lava-Test Test Definition 1.0
-          name: lava-net-tests
-          description: "check helpers"
-          os:
-          - debian
-          scope:
-          - functional
+          name: android-boot
+          description: android-boot
         run:
           steps:
-          - wget http://archive.validation.linaro.org || lava-test-raise "artifactorial not available; job exit" 
-          - lava-test-case artifactorial-up --result pass
-      from: inline
-      name: lava-artifactorial-tests
-      path: inline/lava-artifactorial-test.yaml
-
-notify:
-  criteria:
-    status: incomplete
-  recipients:
-    - to:
-        method: email
-        email: yongqin.liu@linaro.org
-  verbosity: verbose
+          - lava-test-case "android-boot-sleep-30secs" --shell sleep 30
+          - lava-test-case "android-boot-lsusb-v" --shell lsusb -v
+          - lava-test-case "android-boot-boot-completed" --shell "while ! adb shell
+            getprop sys.boot_completed|grep 1; do sleep 2; done"
+          - lava-test-case "android-boot-set-power-stayon" --shell adb shell su 0
+            svc power stayon true
+          - lava-test-case "android-boot-screencap" --shell adb shell screencap -p
+            /data/local/tmp/screencap.png
