@@ -2,7 +2,7 @@
 {% set fastboot_serial_number = '6FFB682C0034659E' %}
 {% set adb_serial_number = '6FFB682C0034659E' %}
 {% set connection_list = ['uart1'] %}
-{% set connection_commands = {'uart1': 'telnet localhost 7101'} %}
+{% set connection_commands = {'uart1': 'telnet lava-ser2net 5001'} %}
 {% set connection_tags = {'uart1': ['primary', 'telnet']} %}
 
 {# OTG connected to USB port 11 #}
@@ -15,7 +15,8 @@
 {# set soft_reset_command = 'fastboot -u -s 315F62C200394AD3' #}
 {% set adb_command = 'adb -s 6FFB682C0034659E' %}
 {% set fastboot_command = 'fastboot -u -s 6FFB682C0034659E' %}
-{% set device_info = [{'board_id': '6FFB682C0034659E', 'wait_device_board_id': False}] %}
+{# set device_info = [{'board_id': '6FFB682C0034659E', 'wait_device_board_id': False}] #}
+{% set device_info = [{'board_id': '6FFB682C0034659E'}] %}
 {% set interrupt_prompt = 'Android Fastboot mode' %}
 {% set interrupt_string = "' '" %}
 {# set device_ip = "10.66.16.27" #}
